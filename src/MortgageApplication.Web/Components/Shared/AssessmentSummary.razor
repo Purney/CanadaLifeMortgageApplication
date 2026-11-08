@@ -1,15 +1,42 @@
 <div class="assessment-outcome @(Assessment.Result.Decision == "approved" ? "outcome-approved" : "outcome-declined")">
     <div class="outcome-icon" aria-hidden="true">@(Assessment.Result.Decision == "approved" ? "✓" : "—")</div>
-    <div><p class="eyebrow">ASSESSMENT RESULT</p><h2>@(Assessment.Result.Decision == "approved" ? "Approved" : "Declined")</h2><p>@Assessment.Result.Explanation</p></div>
+    <div>
+        <p class="eyebrow">ASSESSMENT RESULT</p>
+        <h2>@(Assessment.Result.Decision == "approved" ? "Approved" : "Declined")</h2>
+        <p>@Assessment.Result.Explanation</p>
+    </div>
 </div>
 <div class="metrics-grid">
-    <div class="metric"><span>Loan-to-value</span><strong>@DisplayFormat.Percentage(Assessment.Result.LtvPercentage)</strong><small>Limit @DisplayFormat.Percentage(Assessment.AppliedRules.MaxLtvPercentage)</small></div>
-    <div class="metric"><span>Debt-to-income</span><strong>@DisplayFormat.Percentage(Assessment.Result.DtiPercentage)</strong><small>Limit @DisplayFormat.Percentage(Assessment.AppliedRules.MaxDtiPercentage)</small></div>
-    <div class="metric"><span>Monthly repayment</span><strong>@DisplayFormat.Money(Assessment.Result.MonthlyRepayment)</strong><small>At @DisplayFormat.Percentage(Assessment.AppliedRules.AnnualInterestRatePercentage) annual interest</small></div>
+    <div class="metric">
+        <span>Loan-to-value</span>
+        <strong>@DisplayFormat.Percentage(Assessment.Result.LtvPercentage)</strong>
+        <small>Limit @DisplayFormat.Percentage(Assessment.AppliedRules.MaxLtvPercentage)</small>
+    </div>
+    <div class="metric">
+        <span>Debt-to-income</span>
+        <strong>@DisplayFormat.Percentage(Assessment.Result.DtiPercentage)</strong>
+        <small>Limit @DisplayFormat.Percentage(Assessment.AppliedRules.MaxDtiPercentage)</small>
+    </div>
+    <div class="metric">
+        <span>Monthly repayment</span>
+        <strong>@DisplayFormat.Money(Assessment.Result.MonthlyRepayment)</strong>
+        <small>At @DisplayFormat.Percentage(Assessment.AppliedRules.AnnualInterestRatePercentage) annual interest</small>
+    </div>
 </div>
 <div class="borrowing-grid">
-    <div class="borrowing-card"><p class="eyebrow">AFFORDABILITY CAPACITY</p><strong>@DisplayFormat.Money(Assessment.Result.AffordabilityBasedBorrowingCapacity)</strong><p>Based on income, continuing debt payments and mortgage term, before the property's LTV limit.</p></div>
-    <div class="borrowing-card borrowing-highlight"><p class="eyebrow">MAXIMUM FOR THIS PROPERTY</p><strong>@DisplayFormat.Money(Assessment.Result.MaximumBorrowingForProperty)</strong><p>Affordability capacity capped by the permitted loan-to-value for this property.</p></div>
+    <div class="borrowing-card">
+        <p class="eyebrow">AFFORDABILITY CAPACITY</p>
+        <strong>@DisplayFormat.Money(Assessment.Result.AffordabilityBasedBorrowingCapacity)</strong>
+        <p>Based on income, continuing debt payments and mortgage term, before the property's LTV limit.</p>
+    </div>
+    <div class="borrowing-card borrowing-highlight">
+        <p class="eyebrow">MAXIMUM FOR THIS PROPERTY</p>
+        <strong>@DisplayFormat.Money(Assessment.Result.MaximumBorrowingForProperty)</strong>
+        <p>Affordability capacity capped by the permitted loan-to-value for this property.</p>
+    </div>
 </div>
 
-@code { [Parameter, EditorRequired] public AssessmentRecord Assessment { get; set; } = default!; }
+@code {
+    [Parameter, EditorRequired]
+    public AssessmentRecord Assessment { get; set; } = default!;
+}

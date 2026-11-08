@@ -19,14 +19,25 @@ internal sealed class ApiFactory(string databasePath, string environment = "Deve
                 ["ConnectionStrings:MortgageDatabase"] = $"Data Source={databasePath};Pooling=False",
                 ["Logging:LogLevel:Default"] = "Error"
             };
-            if (overrides is not null) foreach (var item in overrides) settings[item.Key] = item.Value;
+            if (overrides is not null)
+            {
+                foreach (var item in overrides)
+                {
+                    settings[item.Key] = item.Value;
+                }
+            }
+
             config.AddInMemoryCollection(settings);
         });
-        if (clock is not null) builder.ConfigureServices(services =>
+
+        if (clock is not null)
         {
-            services.RemoveAll<TimeProvider>();
-            services.AddSingleton(clock);
-        });
+            builder.ConfigureServices(services =>
+            {
+                services.RemoveAll<TimeProvider>();
+                services.AddSingleton(clock);
+            });
+        }
     }
 }
 

@@ -4,6 +4,8 @@ A .NET 10 JSON API and Blazor frontend for submitting mortgage applications and 
 
 ## Run locally
 
+For the updated interview format, see [the demonstration script](DEMONSTRATION.md): fresh-clone commands, a five-minute demo, code walkthrough and discussion prompts. Commit and push the intended submission before rehearsing a fresh clone; local uncommitted changes and the ignored `Planning/` folder will not be present in it.
+
 Install the **.NET 10 SDK**. From the solution directory:
 
 ```powershell
@@ -62,6 +64,8 @@ dotnet test
 Tests use isolated temporary SQLite files and exercise actual HTTP routing through the ASP.NET Core test host. They cover calculations and boundaries, validation, startup policy, migrations, snapshot history across restart, ordering, failures, and Swagger. Frontend tests cover raw JSON transport, preset requests against the actual API, invalid-record rejection, configuration, HTTP/error handling, rendered pickers, and Web-client compatibility with the API contracts.
 
 ## Try the API
+
+For a ready-made interview demonstration, import the [Postman collection](Postman/MortgageApplication.postman_collection.json). It captures IDs automatically and includes approved/declined assessments, history paging/filtering/sorting, and actual API 400/404 examples. See [Postman setup and the short demo order](Postman/README.md); an optional [localhost environment](Postman/Localhost.postman_environment.json) is included.
 
 In Swagger, use **Try it out** on `POST /applications`:
 
@@ -173,10 +177,14 @@ Swagger UI and automatic migrations are enabled only in Development. Migration f
 
 **Key decisions.** (1) Separate API and Blazor Web projects plus tests: thin UI pages consume the JSON API through a typed client, while validation and affordability decisions remain authoritative in the API. Web-local wire models avoid a dependency on API internals; contract tests guard that small duplication. (2) SQLite with EF Core and migrations: durable local storage with a repeatable setup and no external server. (3) Immutable assessment snapshots: each record captures inputs, applied settings, unrounded result, timestamp, and calculation version so configuration changes cannot rewrite history. Metadata columns support lookups; the full snapshot is JSON stored atomically in one row. Applications have a one-to-many relationship to assessments.
 
+**Controller structure and readability.** `MortgageApplicationsController` exposes the five HTTP operations and delegates persistence and assessment orchestration through `IMortgageApplicationService`. `ApplicationValidator` and `AssessmentQueryValidator` each own their rules and messages once. MVC model binding failures use a shared generic Problem Details response; schema annotations do not replace the custom business validation. The exception handler lives outside startup. The calculator keeps decimal arithmetic, comparison order, unrounded decisions, and snapshot version unchanged.
+
+Handwritten C# uses braces, one statement per line, and logical spacing; `.editorconfig` records the shared conventions. The Web client extracts API error reading into a helper and keeps `MortgageApiException` in its own file. These changes preserve the existing routes, JSON contracts, relative Location headers, SQLite data, and migrations. No database migration is required.
+
 **Scaling.** Measure first, then replace local SQLite with a shared server database if concurrent assessment writes cause contention or multiple API instances are needed. Review migrations, numeric types, snapshot storage, and provider behavior during that move. The bounded calculator is inexpensive; queues and caching are not the first changes.
 
 **Trade-offs.** No authentication, update/delete endpoints, background jobs, Docker, policy administration, idempotency keys, living-cost affordability checks, or tamper-proof auditing. Assessments are created synchronously. Offset-paged history returns full snapshots. SQLite filters saved decisions using a fixed parameterized JSON extraction query before counting/paging; JSON storage is less convenient for indexed reporting across individual calculation fields. This API is intended for local assessment and requires security work before handling real applicant data.
 
 **Next steps.** Add authorization and operational security, retention/audit controls, idempotent creation if required, managed policy versions, and database/load testing driven by actual deployment needs. Consider cursor paging and an indexed decision column if history volume or concurrent reads/writes justify them.
 
-The detailed decision record is [reasonings.md](Planning/reasonings.md); the completed implementation checklist is [implementation-plan.md](Planning/implementation-plan.md). The original brief is [task.md](Planning/task.md), and a three-slide discussion outline is in [presentation.md](Planning/presentation.md).
+The detailed local decision record is [reasonings.md](Planning/reasonings.md); the completed local implementation checklist is [implementation-plan.md](Planning/implementation-plan.md). The original brief is [task.md](Planning/task.md). `Planning/` is intentionally ignored by Git; the submission-facing setup and design explanation are in this README, with the live demonstration and discussion prompts in [DEMONSTRATION.md](DEMONSTRATION.md).

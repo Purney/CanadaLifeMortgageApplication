@@ -5,38 +5,119 @@
 <PageTitle>New application | Canada Life demo</PageTitle>
 
 <div class="content-shell page-content">
-    <div class="breadcrumbs"><a href="/">Home</a><span aria-hidden="true">/</span><span>New application</span></div>
-    <div class="page-heading"><p class="eyebrow red-text">LET'S GET STARTED</p><h1>Start your application</h1><p>Five details. One clear place to begin.</p></div>
+    <div class="breadcrumbs">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>New application</span>
+    </div>
+    <div class="page-heading">
+        <p class="eyebrow red-text">LET'S GET STARTED</p>
+        <h1>Start your application</h1>
+        <p>Five details. One clear place to begin.</p>
+    </div>
     @if (scenario is not null)
     {
-        <section class="example-banner" aria-label="Loaded example"><h2>@scenario.Title</h2><p>@scenario.Description Nothing is sent until you choose Save application.</p></section>
+        <section class="example-banner" aria-label="Loaded example">
+            <h2>@scenario.Title</h2>
+            <p>@scenario.Description Nothing is sent until you choose Save application.</p>
+        </section>
     }
     <div class="form-layout">
         <section class="surface form-surface" aria-labelledby="details-heading">
-            <div class="surface-heading"><span class="section-number">01</span><div><h2 id="details-heading">Your mortgage details</h2><p>Enter amounts in pounds sterling. The API checks your inputs when you save.</p></div></div>
+            <div class="surface-heading">
+                <span class="section-number">01</span>
+                <div>
+                    <h2 id="details-heading">Your mortgage details</h2>
+                    <p>Enter amounts in pounds sterling. The API checks your inputs when you save.</p>
+                </div>
+            </div>
             <ErrorNotice Title="@errorTitle" Message="@error" />
             <EditForm @key="editContext" EditContext="editContext" OnSubmit="SubmitAsync" FormName="new-application" novalidate>
                 <ValidationSummary />
                 <fieldset disabled="@saving">
-                    <div class="field"><label for="annual-income">Gross annual income</label><p class="field-hint" id="income-hint">Your total income before tax and deductions.</p><div class="input-affix"><span aria-hidden="true">£</span><LiveInputText id="annual-income" @bind-Value="model.AnnualIncome" inputmode="decimal" aria-describedby="income-hint" /></div><ValidationMessage For="() => model.AnnualIncome" /></div>
-                    <div class="field"><label for="monthly-expenses">Monthly debt payments</label><p class="field-hint" id="debt-hint">Payments that will continue alongside the new mortgage. Exclude everyday living costs and housing payments the mortgage replaces.</p><div class="input-affix"><span aria-hidden="true">£</span><LiveInputText id="monthly-expenses" @bind-Value="model.MonthlyExpenses" inputmode="decimal" aria-describedby="debt-hint" /></div><ValidationMessage For="() => model.MonthlyExpenses" /></div>
-                    <div class="field-row"><div class="field"><label for="deposit">Deposit amount</label><div class="input-affix"><span aria-hidden="true">£</span><LiveInputText id="deposit" @bind-Value="model.DepositAmount" inputmode="decimal" /></div><ValidationMessage For="() => model.DepositAmount" /></div><div class="field"><label for="property-value">Property value</label><div class="input-affix"><span aria-hidden="true">£</span><LiveInputText id="property-value" @bind-Value="model.PropertyValue" inputmode="decimal" /></div><ValidationMessage For="() => model.PropertyValue" /></div></div>
-                    <div class="field term-field"><label for="term">Mortgage term</label><p class="field-hint" id="term-hint">Choose a whole number from 1 to 40 years.</p><div class="input-affix affix-end"><LiveInputText id="term" @bind-Value="model.TermYears" inputmode="numeric" aria-describedby="term-hint" /><span aria-hidden="true">years</span></div><ValidationMessage For="() => model.TermYears" /></div>
-                    <div class="form-actions"><button class="button button-primary" type="submit">@(saving ? "Saving application…" : "Save application") <span aria-hidden="true">→</span></button><ExamplePicker Choices="ApplicationExamples.All" Selected="LoadExample" Disabled="saving" /></div>
+                    <div class="field">
+                        <label for="annual-income">Gross annual income</label>
+                        <p class="field-hint" id="income-hint">Your total income before tax and deductions.</p>
+                        <div class="input-affix">
+                            <span aria-hidden="true">£</span>
+                            <LiveInputText id="annual-income" @bind-Value="model.AnnualIncome" inputmode="decimal" aria-describedby="income-hint" />
+                        </div>
+                        <ValidationMessage For="() => model.AnnualIncome" />
+                    </div>
+                    <div class="field">
+                        <label for="monthly-expenses">Monthly debt payments</label>
+                        <p class="field-hint" id="debt-hint">Payments that will continue alongside the new mortgage. Exclude everyday living costs and housing payments the mortgage replaces.</p>
+                        <div class="input-affix">
+                            <span aria-hidden="true">£</span>
+                            <LiveInputText
+                                id="monthly-expenses"
+                                @bind-Value="model.MonthlyExpenses"
+                                inputmode="decimal"
+                                aria-describedby="debt-hint" />
+                        </div>
+                        <ValidationMessage For="() => model.MonthlyExpenses" />
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="deposit">Deposit amount</label>
+                            <div class="input-affix">
+                                <span aria-hidden="true">£</span>
+                                <LiveInputText id="deposit" @bind-Value="model.DepositAmount" inputmode="decimal" />
+                            </div>
+                            <ValidationMessage For="() => model.DepositAmount" />
+                        </div>
+                        <div class="field">
+                            <label for="property-value">Property value</label>
+                            <div class="input-affix">
+                                <span aria-hidden="true">£</span>
+                                <LiveInputText id="property-value" @bind-Value="model.PropertyValue" inputmode="decimal" />
+                            </div>
+                            <ValidationMessage For="() => model.PropertyValue" />
+                        </div>
+                    </div>
+                    <div class="field term-field">
+                        <label for="term">Mortgage term</label>
+                        <p class="field-hint" id="term-hint">Choose a whole number from 1 to 40 years.</p>
+                        <div class="input-affix affix-end">
+                            <LiveInputText id="term" @bind-Value="model.TermYears" inputmode="numeric" aria-describedby="term-hint" />
+                            <span aria-hidden="true">years</span>
+                        </div>
+                        <ValidationMessage For="() => model.TermYears" />
+                    </div>
+                    <div class="form-actions">
+                        <button class="button button-primary" type="submit">@(saving ? "Saving application…" : "Save application") <span aria-hidden="true">→</span>
+                        </button>
+                        <ExamplePicker Choices="ApplicationExamples.All" Selected="LoadExample" Disabled="saving" />
+                    </div>
                 </fieldset>
                 <p class="small-note" aria-live="polite">@(saving ? "Your application is being saved. Please wait." : "Saving creates a record. You can run an affordability assessment next.")</p>
             </EditForm>
         </section>
-        <aside class="help-panel"><div class="help-icon" aria-hidden="true">⌂</div><p class="eyebrow">A CLEAR START</p><h2>A few figures.<br />A fuller picture.</h2><p>Once your application is saved, you can run an assessment and see how your details compare with the configured affordability limits.</p><hr /><h3>Before you begin</h3><ul class="check-list"><li>Use gross income before tax.</li><li>Include continuing debt payments only.</li><li>Your deposit must be less than the property value.</li></ul><p class="small-note">The example figures are for demonstration. No assessment is made until you choose to run one.</p></aside>
+        <aside class="help-panel">
+            <div class="help-icon" aria-hidden="true">⌂</div>
+            <p class="eyebrow">A CLEAR START</p>
+            <h2>A few figures.<br />A fuller picture.</h2>
+            <p>Once your application is saved, you can run an assessment and see how your details compare with the configured affordability limits.</p>
+            <hr />
+            <h3>Before you begin</h3>
+            <ul class="check-list">
+                <li>Use gross income before tax.</li>
+                <li>Include continuing debt payments only.</li>
+                <li>Your deposit must be less than the property value.</li>
+            </ul>
+            <p class="small-note">The example figures are for demonstration. No assessment is made until you choose to run one.</p>
+        </aside>
     </div>
 </div>
 
 @code {
     private ApplicationExample? scenario;
     private ApplicationForm model = new();
+
     private readonly CancellationTokenSource cancellation = new();
     private EditContext editContext = default!;
     private ValidationMessageStore serverMessages = default!;
+
     private bool saving;
     private string? error;
     private string errorTitle = "The API could not save this application";
@@ -58,47 +139,80 @@
 
     private void LoadExample(string key)
     {
-        if (saving) return;
+        if (saving)
+        {
+            return;
+        }
+
         editContext.OnFieldChanged -= ClearChangedField;
+
         model = ApplicationExamples.Create(key);
         scenario = ApplicationExamples.Find(key);
         error = null;
+
         // Replace the keyed inputs with their model and API validation store.
         InitializeEditContext();
     }
 
     private async Task SubmitAsync()
     {
-        if (saving) return;
+        if (saving)
+        {
+            return;
+        }
+
         saving = true;
         error = null;
+
         serverMessages.Clear();
         editContext.NotifyValidationStateChanged();
+
         try
         {
             var saved = await Api.CreateApplicationAsync(model, cancellation.Token);
-            if (!cancellation.IsCancellationRequested) Navigation.NavigateTo($"/applications/{saved.Id}");
+            if (!cancellation.IsCancellationRequested)
+            {
+                Navigation.NavigateTo($"/applications/{saved.Id}");
+            }
         }
         catch (MortgageApiException exception)
         {
-            if (cancellation.IsCancellationRequested) return;
+            if (cancellation.IsCancellationRequested)
+            {
+                return;
+            }
+
             error = exception.Message;
-            errorTitle = exception.StatusCode is { } code ? $"API response · HTTP {(int)code}" : "The mortgage service could not be reached";
+            errorTitle = exception.StatusCode is { } code
+                ? $"API response · HTTP {(int)code}"
+                : "The mortgage service could not be reached";
+
             foreach (var item in exception.Errors)
             {
-                var property = item.Key.Length > 0 ? char.ToUpperInvariant(item.Key[0]) + item.Key[1..] : "";
+                var property = item.Key.Length > 0
+                    ? char.ToUpperInvariant(item.Key[0]) + item.Key[1..]
+                    : "";
+
                 serverMessages.Add(new FieldIdentifier(model, property), item.Value);
             }
+
             editContext.NotifyValidationStateChanged();
         }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
-        finally { saving = false; }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            // Leaving the form cancels its response handling.
+        }
+        finally
+        {
+            saving = false;
+        }
     }
 
     public void Dispose()
     {
         cancellation.Cancel();
         cancellation.Dispose();
+
         editContext.OnFieldChanged -= ClearChangedField;
     }
 }

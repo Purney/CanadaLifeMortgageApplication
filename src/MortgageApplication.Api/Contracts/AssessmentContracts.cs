@@ -2,8 +2,11 @@ using System.ComponentModel;
 
 namespace MortgageApplication.Api.Contracts;
 
-public sealed record AssessmentPolicy(decimal AnnualInterestRatePercentage, decimal MaxLtvPercentage,
-    decimal MaxDtiPercentage, decimal MaxIncomeMultiple);
+public sealed record AssessmentPolicy(
+    decimal AnnualInterestRatePercentage,
+    decimal MaxLtvPercentage,
+    decimal MaxDtiPercentage,
+    decimal MaxIncomeMultiple);
 
 public sealed record AssessmentResult(
     decimal LoanAmount,
@@ -17,18 +20,34 @@ public sealed record AssessmentResult(
 {
     public AssessmentResult Rounded() => this with
     {
-        LoanAmount = Round(LoanAmount), MonthlyRepayment = Round(MonthlyRepayment),
-        LtvPercentage = Round(LtvPercentage), DtiPercentage = Round(DtiPercentage),
+        LoanAmount = Round(LoanAmount),
+        MonthlyRepayment = Round(MonthlyRepayment),
+        LtvPercentage = Round(LtvPercentage),
+        DtiPercentage = Round(DtiPercentage),
         AffordabilityBasedBorrowingCapacity = Round(AffordabilityBasedBorrowingCapacity),
         MaximumBorrowingForProperty = Round(MaximumBorrowingForProperty)
     };
+
     private static decimal Round(decimal value) => decimal.Round(value, 2, MidpointRounding.ToEven);
 }
 
-public sealed record AssessmentResponse(Guid Id, Guid ApplicationId, DateTimeOffset CreatedAtUtc,
-    string CalculationVersion, ApplicationInputs Inputs, AssessmentPolicy AppliedRules, AssessmentResult Result)
+public sealed record AssessmentResponse(
+    Guid Id,
+    Guid ApplicationId,
+    DateTimeOffset CreatedAtUtc,
+    string CalculationVersion,
+    ApplicationInputs Inputs,
+    AssessmentPolicy AppliedRules,
+    AssessmentResult Result)
 {
-    public AssessmentResponse Rounded() => this with { Result = Result.Rounded() };
+    public AssessmentResponse Rounded() => this with
+    {
+        Result = Result.Rounded()
+    };
 }
 
-public sealed record AssessmentPage(IReadOnlyList<AssessmentResponse> Items, int Offset, int Limit, int TotalCount);
+public sealed record AssessmentPage(
+    IReadOnlyList<AssessmentResponse> Items,
+    int Offset,
+    int Limit,
+    int TotalCount);

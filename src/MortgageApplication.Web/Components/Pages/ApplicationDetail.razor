@@ -5,36 +5,96 @@
 <PageTitle>Application overview | Canada Life demo</PageTitle>
 
 <div class="content-shell page-content">
-    <div class="breadcrumbs"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/applications/find">Find application</a><span aria-hidden="true">/</span><span>Application</span></div>
-    <div class="page-heading"><p class="eyebrow red-text">YOUR SAVED APPLICATION</p><h1>Your mortgage, at a glance</h1><p>Review your details and explore your affordability.</p></div>
+    <div class="breadcrumbs">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/applications/find">Find application</a>
+        <span aria-hidden="true">/</span>
+        <span>Application</span>
+    </div>
+    <div class="page-heading">
+        <p class="eyebrow red-text">YOUR SAVED APPLICATION</p>
+        <h1>Your mortgage, at a glance</h1>
+        <p>Review your details and explore your affordability.</p>
+    </div>
     @if (loading)
     {
-        <div class="loading-state" role="status"><span class="spinner" aria-hidden="true"></span>Loading your application…</div>
+        <div class="loading-state" role="status">
+            <span class="spinner" aria-hidden="true"></span>Loading your application…</div>
     }
     else if (error is not null)
     {
         <ErrorNotice Message="@error" Title="Application unavailable" />
-        <div class="button-row"><button class="button button-primary" @onclick="LoadApplicationAsync">Try again</button><a href="/applications/find" class="button button-outline">Check your reference</a></div>
+        <div class="button-row">
+            <button class="button button-primary" @onclick="LoadApplicationAsync">Try again</button>
+            <a href="/applications/find" class="button button-outline">Check your reference</a>
+        </div>
     }
     else if (application is not null)
     {
         <section class="surface application-overview">
-            <div class="surface-title-row"><div><p class="eyebrow red-text">APPLICATION REFERENCE</p><p class="reference-value">@application.Id</p><p class="small-note">Saved @DisplayFormat.Timestamp(application.CreatedAtUtc)</p></div><span class="saved-label"><span aria-hidden="true">✓</span> Saved application</span></div>
+            <div class="surface-title-row">
+                <div>
+                    <p class="eyebrow red-text">APPLICATION REFERENCE</p>
+                    <p class="reference-value">@application.Id</p>
+                    <p class="small-note">Saved @DisplayFormat.Timestamp(application.CreatedAtUtc)</p>
+                </div>
+                <span class="saved-label">
+                    <span aria-hidden="true">✓</span> Saved application</span>
+            </div>
             <InputSnapshot Inputs="application.Inputs" />
         </section>
-        <section class="assessment-callout"><div><p class="eyebrow">YOUR NEXT STEP</p><h2>See where you stand.</h2><p>Run an affordability assessment using your saved details. Each assessment keeps its own result and applied rules.</p></div><button class="button button-primary" disabled="@creating" @onclick="CreateAssessmentAsync">@(creating ? "Creating assessment…" : "Run an assessment") <span aria-hidden="true">→</span></button></section>
+        <section class="assessment-callout">
+            <div>
+                <p class="eyebrow">YOUR NEXT STEP</p>
+                <h2>See where you stand.</h2>
+                <p>Run an affordability assessment using your saved details. Each assessment keeps its own result and applied rules.</p>
+            </div>
+            <button class="button button-primary" disabled="@creating" @onclick="CreateAssessmentAsync">@(creating ? "Creating assessment…" : "Run an assessment") <span aria-hidden="true">→</span>
+            </button>
+        </section>
         <ErrorNotice Message="@createError" />
         <p class="visually-hidden" role="status">@(creating ? "Creating and saving your assessment. Please wait." : "")</p>
         <section class="surface history-surface" aria-labelledby="history-heading">
-            <div class="surface-title-row"><div><p class="eyebrow red-text">A CLEAR RECORD</p><h2 id="history-heading">Assessment history</h2><p class="small-note">Saved results stay unchanged when assessment rules change.</p></div><button class="button-text" @onclick="LoadHistoryAsync" disabled="@historyLoading">Refresh <span aria-hidden="true">↻</span></button></div>
+            <div class="surface-title-row">
+                <div>
+                    <p class="eyebrow red-text">A CLEAR RECORD</p>
+                    <h2 id="history-heading">Assessment history</h2>
+                    <p class="small-note">Saved results stay unchanged when assessment rules change.</p>
+                </div>
+                <button class="button-text" @onclick="LoadHistoryAsync" disabled="@historyLoading">Refresh <span aria-hidden="true">↻</span>
+                </button>
+            </div>
             <div class="history-filters">
-                <div class="field"><label for="status-filter">Decision</label><select id="status-filter" @bind="status" @bind:after="FiltersChangedAsync"><option value="all">All decisions</option><option value="approved">Approved</option><option value="declined">Declined</option></select></div>
-                <div class="field"><label for="sort-filter">Date order</label><select id="sort-filter" @bind="sort" @bind:after="FiltersChangedAsync"><option value="desc">Newest first</option><option value="asc">Oldest first</option></select></div>
-                <div class="field"><label for="size-filter">Results per page</label><select id="size-filter" @bind="limit" @bind:after="FiltersChangedAsync"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></div>
+                <div class="field">
+                    <label for="status-filter">Decision</label>
+                    <select id="status-filter" @bind="status" @bind:after="FiltersChangedAsync">
+                        <option value="all">All decisions</option>
+                        <option value="approved">Approved</option>
+                        <option value="declined">Declined</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="sort-filter">Date order</label>
+                    <select id="sort-filter" @bind="sort" @bind:after="FiltersChangedAsync">
+                        <option value="desc">Newest first</option>
+                        <option value="asc">Oldest first</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="size-filter">Results per page</label>
+                    <select id="size-filter" @bind="limit" @bind:after="FiltersChangedAsync">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
             </div>
             @if (historyLoading)
             {
-                <div class="loading-state" role="status"><span class="spinner" aria-hidden="true"></span>Loading saved assessments…</div>
+                <div class="loading-state" role="status">
+                    <span class="spinner" aria-hidden="true"></span>Loading saved assessments…</div>
             }
             else if (historyError is not null)
             {
@@ -43,93 +103,263 @@
             }
             else if (history is not null && history.Items.Count == 0)
             {
-                <div class="empty-state" role="status"><span class="empty-icon" aria-hidden="true">≡</span><h3>@(history.TotalCount == 0 && status == "all" ? "A fresh start" : "No assessments to show")</h3><p>@(status == "all" && history.TotalCount == 0 ? "Run your first assessment to see a borrowing estimate and a clear explanation here." : "Try another decision filter or return to the first page.")</p>@if (offset > 0) { <button class="button-text" @onclick="FirstPageAsync">Return to first page</button> }</div>
+                <div class="empty-state" role="status">
+                    <span class="empty-icon" aria-hidden="true">≡</span>
+                    <h3>@(history.TotalCount == 0 && status == "all" ? "A fresh start" : "No assessments to show")</h3>
+                    <p>@(status == "all" && history.TotalCount == 0 ? "Run your first assessment to see a borrowing estimate and a clear explanation here." : "Try another decision filter or return to the first page.")</p>
+                    @if (offset > 0)
+                    {
+                        <button class="button-text" @onclick="FirstPageAsync">Return to first page</button>
+                    }
+                </div>
             }
             else if (history is not null)
             {
-                <div class="table-scroll" tabindex="0" role="region" aria-label="Assessment history, scroll horizontally on small screens">
-                    <table><thead><tr><th scope="col">Assessed (UTC)</th><th scope="col">Decision</th><th scope="col">Monthly repayment</th><th scope="col">LTV / DTI</th><th scope="col"><span class="visually-hidden">Open saved assessment</span></th></tr></thead><tbody>
-                        @foreach (var assessment in history.Items)
-                        {
-                            <tr><td><strong class="table-date">@assessment.CreatedAtUtc.ToString("dd MMM yyyy")</strong><span class="table-secondary">@assessment.CreatedAtUtc.ToString("HH:mm:ss") UTC</span></td><td><span class="decision-badge @assessment.Result.Decision">@assessment.Result.Decision</span></td><td>@DisplayFormat.Money(assessment.Result.MonthlyRepayment)</td><td><span>@DisplayFormat.Percentage(assessment.Result.LtvPercentage) / @DisplayFormat.Percentage(assessment.Result.DtiPercentage)</span></td><td><a class="text-link nowrap" href="/applications/@Id/assessments/@assessment.Id" aria-label="@($"View {assessment.Result.Decision} assessment {assessment.Id}")">View result <span aria-hidden="true">→</span></a></td></tr>
-                        }
-                    </tbody></table>
+                <div
+                    class="table-scroll"
+                    tabindex="0"
+                    role="region"
+                    aria-label="Assessment history, scroll horizontally on small screens">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Assessed (UTC)</th>
+                                <th scope="col">Decision</th>
+                                <th scope="col">Monthly repayment</th>
+                                <th scope="col">LTV / DTI</th>
+                                <th scope="col">
+                                    <span class="visually-hidden">Open saved assessment</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var assessment in history.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="table-date">@assessment.CreatedAtUtc.ToString("dd MMM yyyy")</strong>
+                                        <span class="table-secondary">@assessment.CreatedAtUtc.ToString("HH:mm:ss") UTC</span>
+                                    </td>
+                                    <td>
+                                        <span class="decision-badge @assessment.Result.Decision">@assessment.Result.Decision</span>
+                                    </td>
+                                    <td>@DisplayFormat.Money(assessment.Result.MonthlyRepayment)</td>
+                                    <td>
+                                        <span>@DisplayFormat.Percentage(assessment.Result.LtvPercentage) / @DisplayFormat.Percentage(assessment.Result.DtiPercentage)</span>
+                                    </td>
+                                    <td>
+                                        <a class="text-link nowrap" href="/applications/@Id/assessments/@assessment.Id" aria-label="@($"View {assessment.Result.Decision} assessment {assessment.Id}")">View result <span aria-hidden="true">→</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             }
             @if (!historyLoading && historyError is null && history is not null)
             {
-                <div class="pagination"><p role="status">@(history.Items.Count == 0 ? "0" : $"{offset + 1}–{offset + history.Items.Count}") of @history.TotalCount matching assessments</p><div><button class="button button-small button-outline" disabled="@(offset == 0)" @onclick="PreviousPageAsync">← Previous</button><button class="button button-small button-outline" disabled="@((long)offset + limit >= history.TotalCount)" @onclick="NextPageAsync">Next →</button></div></div>
+                <div class="pagination">
+                    <p role="status">@(history.Items.Count == 0 ? "0" : $"{offset + 1}–{offset + history.Items.Count}") of @history.TotalCount matching assessments</p>
+                    <div>
+                        <button class="button button-small button-outline" disabled="@(offset == 0)" @onclick="PreviousPageAsync">← Previous</button>
+                        <button class="button button-small button-outline" disabled="@((long)offset + limit >= history.TotalCount)" @onclick="NextPageAsync">Next →</button>
+                    </div>
+                </div>
             }
         </section>
-        <div class="demo-note"><span class="info-symbol" aria-hidden="true">i</span><p>All amounts are displayed in pounds sterling for this demonstration. Assessments use simplified rules and aren't lending offers.</p></div>
+        <div class="demo-note">
+            <span class="info-symbol" aria-hidden="true">i</span>
+            <p>All amounts are displayed in pounds sterling for this demonstration. Assessments use simplified rules and aren't lending offers.</p>
+        </div>
     }
 </div>
 
 @code {
-    [Parameter] public Guid Id { get; set; }
+    [Parameter]
+    public Guid Id { get; set; }
+
     private ApplicationRecord? application;
     private AssessmentHistory? history;
-    private string? error, historyError, createError;
-    private bool loading = true, historyLoading, creating;
-    private int offset, limit = 10;
-    private string status = "all", sort = "desc";
-    private CancellationTokenSource? pageCancellation, historyCancellation;
+
+    private string? error;
+    private string? historyError;
+    private string? createError;
+
+    private bool loading = true;
+    private bool historyLoading;
+    private bool creating;
+
+    private int offset;
+    private int limit = 10;
+    private string status = "all";
+    private string sort = "desc";
+
+    private CancellationTokenSource? pageCancellation;
+    private CancellationTokenSource? historyCancellation;
+
     protected override Task OnParametersSetAsync() => LoadApplicationAsync();
 
     private async Task LoadApplicationAsync()
     {
-        pageCancellation?.Cancel(); pageCancellation?.Dispose();
-        pageCancellation = new(); var token = pageCancellation.Token;
-        application = null; history = null; error = null; createError = null; loading = true; creating = false;
-        offset = 0; limit = 10; status = "all"; sort = "desc";
+        pageCancellation?.Cancel();
+        pageCancellation?.Dispose();
+        pageCancellation = new CancellationTokenSource();
+        var token = pageCancellation.Token;
+
+        application = null;
+        history = null;
+        error = null;
+        createError = null;
+        loading = true;
+        creating = false;
+
+        offset = 0;
+        limit = 10;
+        status = "all";
+        sort = "desc";
+
         try
         {
             var saved = await Api.GetApplicationAsync(Id, token);
-            if (token.IsCancellationRequested) return;
-            application = saved; loading = false;
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
+            application = saved;
+            loading = false;
+
             await LoadHistoryAsync();
         }
-        catch (MortgageApiException exception) { if (!token.IsCancellationRequested) error = exception.Message; }
-        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-        finally { if (!token.IsCancellationRequested) loading = false; }
+        catch (MortgageApiException exception)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                error = exception.Message;
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // Navigation or disposal cancelled this obsolete request.
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                loading = false;
+            }
+        }
     }
 
     private async Task LoadHistoryAsync()
     {
-        if (application is null || pageCancellation is null) return;
-        historyCancellation?.Cancel(); historyCancellation?.Dispose();
+        if (application is null || pageCancellation is null)
+        {
+            return;
+        }
+
+        historyCancellation?.Cancel();
+        historyCancellation?.Dispose();
         historyCancellation = CancellationTokenSource.CreateLinkedTokenSource(pageCancellation.Token);
-        var token = historyCancellation.Token; historyLoading = true; historyError = null;
+        var token = historyCancellation.Token;
+
+        historyLoading = true;
+        historyError = null;
+
         try
         {
             var page = await Api.GetHistoryAsync(Id, offset, limit, status, sort, token);
-            if (!token.IsCancellationRequested) history = page;
+            if (!token.IsCancellationRequested)
+            {
+                history = page;
+            }
         }
-        catch (MortgageApiException exception) { if (!token.IsCancellationRequested) historyError = exception.Message; }
-        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-        finally { if (!token.IsCancellationRequested) historyLoading = false; }
+        catch (MortgageApiException exception)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                historyError = exception.Message;
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // A newer filter or page request superseded this read.
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                historyLoading = false;
+            }
+        }
     }
 
     private async Task CreateAssessmentAsync()
     {
-        if (creating || pageCancellation is null) return;
-        creating = true; createError = null; var token = pageCancellation.Token;
+        if (creating || pageCancellation is null)
+        {
+            return;
+        }
+
+        creating = true;
+        createError = null;
+        var token = pageCancellation.Token;
+
         try
         {
             var assessment = await Api.CreateAssessmentAsync(Id, token);
-            if (!token.IsCancellationRequested) Navigation.NavigateTo($"/applications/{assessment.ApplicationId}/assessments/{assessment.Id}");
+            if (!token.IsCancellationRequested)
+            {
+                Navigation.NavigateTo($"/applications/{assessment.ApplicationId}/assessments/{assessment.Id}");
+            }
         }
-        catch (MortgageApiException exception) { if (!token.IsCancellationRequested) createError = exception.Message; }
-        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-        finally { if (!token.IsCancellationRequested) creating = false; }
+        catch (MortgageApiException exception)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                createError = exception.Message;
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // Leaving the page cancels the pending response handling.
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                creating = false;
+            }
+        }
     }
-    private Task FiltersChangedAsync() { offset = 0; return LoadHistoryAsync(); }
-    private Task FirstPageAsync() { offset = 0; return LoadHistoryAsync(); }
-    private Task PreviousPageAsync() { offset = Math.Max(0, offset - limit); return LoadHistoryAsync(); }
-    private Task NextPageAsync() { offset += limit; return LoadHistoryAsync(); }
+
+    private Task FiltersChangedAsync() => FirstPageAsync();
+
+    private Task FirstPageAsync()
+    {
+        offset = 0;
+        return LoadHistoryAsync();
+    }
+
+    private Task PreviousPageAsync()
+    {
+        offset = Math.Max(0, offset - limit);
+        return LoadHistoryAsync();
+    }
+
+    private Task NextPageAsync()
+    {
+        offset += limit;
+        return LoadHistoryAsync();
+    }
+
     public void Dispose()
     {
-        historyCancellation?.Cancel(); historyCancellation?.Dispose();
-        pageCancellation?.Cancel(); pageCancellation?.Dispose();
+        historyCancellation?.Cancel();
+        historyCancellation?.Dispose();
+
+        pageCancellation?.Cancel();
+        pageCancellation?.Dispose();
     }
 }

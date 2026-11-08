@@ -13,5 +13,6 @@ public sealed class MortgageApplication
     public int TermYears { get; set; }
 
     public ApplicationInputs ToInputs() => new(AnnualIncome, MonthlyExpenses, DepositAmount, PropertyValue, TermYears);
+
     public ApplicationResponse ToResponse() => new(Id, new DateTimeOffset(DateTime.SpecifyKind(CreatedAtUtc, DateTimeKind.Utc)), ToInputs());
 }

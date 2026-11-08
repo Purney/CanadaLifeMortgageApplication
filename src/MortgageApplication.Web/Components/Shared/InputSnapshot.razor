@@ -1,9 +1,27 @@
 <dl class="detail-grid">
-    <div><dt>Annual income</dt><dd>@DisplayFormat.Money(Inputs.AnnualIncome)</dd></div>
-    <div><dt>Monthly debt payments</dt><dd>@DisplayFormat.Money(Inputs.MonthlyExpenses)</dd></div>
-    <div><dt>Deposit amount</dt><dd>@DisplayFormat.Money(Inputs.DepositAmount)</dd></div>
-    <div><dt>Property value</dt><dd>@DisplayFormat.Money(Inputs.PropertyValue)</dd></div>
-    <div><dt>Mortgage term</dt><dd>@Inputs.TermYears years</dd></div>
+    <div>
+        <dt>Annual income</dt>
+        <dd>@DisplayFormat.Money(Inputs.AnnualIncome)</dd>
+    </div>
+    <div>
+        <dt>Monthly debt payments</dt>
+        <dd>@DisplayFormat.Money(Inputs.MonthlyExpenses)</dd>
+    </div>
+    <div>
+        <dt>Deposit amount</dt>
+        <dd>@DisplayFormat.Money(Inputs.DepositAmount)</dd>
+    </div>
+    <div>
+        <dt>Property value</dt>
+        <dd>@DisplayFormat.Money(Inputs.PropertyValue)</dd>
+    </div>
+    <div>
+        <dt>Mortgage term</dt>
+        <dd>@Inputs.TermYears years</dd>
+    </div>
 </dl>
 
-@code { [Parameter, EditorRequired] public MortgageInputs Inputs { get; set; } = default!; }
+@code {
+    [Parameter, EditorRequired]
+    public MortgageInputs Inputs { get; set; } = default!;
+}

@@ -7,6 +7,7 @@ namespace MortgageApplication.Api.Data;
 public sealed class MortgageDbContext(DbContextOptions<MortgageDbContext> options) : DbContext(options)
 {
     public DbSet<ApplicationEntity> Applications => Set<ApplicationEntity>();
+
     public DbSet<AffordabilityAssessment> Assessments => Set<AffordabilityAssessment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

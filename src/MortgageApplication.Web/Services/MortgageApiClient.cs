@@ -5,14 +5,7 @@ using MortgageApplication.Web.Forms;
 
 namespace MortgageApplication.Web.Services;
 
-public sealed class MortgageApiException(string message, HttpStatusCode? statusCode = null,
-    IReadOnlyDictionary<string, string[]>? errors = null) : Exception(message)
-{
-    public HttpStatusCode? StatusCode { get; } = statusCode;
-    public IReadOnlyDictionary<string, string[]> Errors { get; } = errors ?? new Dictionary<string, string[]>();
-}
-
-public sealed class MortgageApiClient(HttpClient http)
+public sealed class MortgageApiClient(HttpClient httpClient)
 {
     public Task<ApplicationRecord> CreateApplicationAsync(ApplicationForm form, CancellationToken cancellationToken = default) =>
         SendAsync<ApplicationRecord>(HttpMethod.Post, "applications", new
@@ -42,26 +35,27 @@ public sealed class MortgageApiClient(HttpClient http)
             $"applications/{applicationId}/assessments?offset={offset}&limit={limit}&status={Uri.EscapeDataString(status)}&sort={Uri.EscapeDataString(sort)}",
             null, cancellationToken);
 
-    private async Task<T> SendAsync<T>(HttpMethod method, string route, object? body, CancellationToken cancellationToken)
+    private async Task<T> SendAsync<T>(
+        HttpMethod method,
+        string route,
+        object? body,
+        CancellationToken cancellationToken)
     {
         try
         {
             using var request = new HttpRequestMessage(method, route);
-            if (body is not null) request.Content = JsonContent.Create(body);
-            using var response = await http.SendAsync(request, cancellationToken);
+            if (body is not null)
+            {
+                request.Content = JsonContent.Create(body);
+            }
+
+            using var response = await httpClient.SendAsync(request, cancellationToken);
+
             if (!response.IsSuccessStatusCode)
             {
-                ApiProblem? problem = null;
-                try { problem = await response.Content.ReadFromJsonAsync<ApiProblem>(cancellationToken); }
-                catch (JsonException) { }
-                var message = response.StatusCode switch
-                {
-                    HttpStatusCode.NotFound => "We couldn't find that saved record. Check the reference and try again.",
-                    HttpStatusCode.BadRequest => problem?.Detail ?? "Check the highlighted fields and try again.",
-                    _ => "The mortgage service couldn't complete the request. Please try again shortly."
-                };
-                throw new MortgageApiException(message, response.StatusCode, problem?.Errors);
+                throw await ReadApiErrorAsync(response, cancellationToken);
             }
+
             return await response.Content.ReadFromJsonAsync<T>(cancellationToken)
                 ?? throw new MortgageApiException("The mortgage service returned an empty response. Please try again shortly.");
         }
@@ -79,6 +73,31 @@ public sealed class MortgageApiClient(HttpClient http)
         {
             throw new MortgageApiException("The mortgage service returned an unexpected response. Please try again shortly.");
         }
+    }
+
+    private static async Task<MortgageApiException> ReadApiErrorAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken)
+    {
+        ApiProblem? problem = null;
+
+        try
+        {
+            problem = await response.Content.ReadFromJsonAsync<ApiProblem>(cancellationToken);
+        }
+        catch (JsonException)
+        {
+            // An upstream failure might not include a JSON Problem Details body.
+        }
+
+        var message = response.StatusCode switch
+        {
+            HttpStatusCode.NotFound => "We couldn't find that saved record. Check the reference and try again.",
+            HttpStatusCode.BadRequest => problem?.Detail ?? "Check the highlighted fields and try again.",
+            _ => "The mortgage service couldn't complete the request. Please try again shortly."
+        };
+
+        return new MortgageApiException(message, response.StatusCode, problem?.Errors);
     }
 
     private sealed record ApiProblem(string? Title, string? Detail, Dictionary<string, string[]>? Errors);

@@ -4,44 +4,165 @@
 <PageTitle>Assessment result | Canada Life demo</PageTitle>
 
 <div class="content-shell page-content">
-    <div class="breadcrumbs"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/applications/@ApplicationId">Application</a><span aria-hidden="true">/</span><span>Assessment</span></div>
-    <div class="page-heading heading-with-action"><div><p class="eyebrow red-text">YOUR AFFORDABILITY PICTURE</p><h1>A clearer view of your next step</h1><p>An immutable record of this assessment and the rules it used.</p></div><a class="button button-outline" href="/applications/@ApplicationId">← Back to application</a></div>
+    <div class="breadcrumbs">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/applications/@ApplicationId">Application</a>
+        <span aria-hidden="true">/</span>
+        <span>Assessment</span>
+    </div>
+    <div class="page-heading heading-with-action">
+        <div>
+            <p class="eyebrow red-text">YOUR AFFORDABILITY PICTURE</p>
+            <h1>A clearer view of your next step</h1>
+            <p>An immutable record of this assessment and the rules it used.</p>
+        </div>
+        <a class="button button-outline" href="/applications/@ApplicationId">← Back to application</a>
+    </div>
     @if (loading)
     {
-        <div class="loading-state" role="status"><span class="spinner" aria-hidden="true"></span>Loading your saved assessment…</div>
+        <div class="loading-state" role="status">
+            <span class="spinner" aria-hidden="true"></span>Loading your saved assessment…</div>
     }
     else if (error is not null)
     {
-        <ErrorNotice Message="@error" Title="Assessment unavailable" /><button class="button button-primary" @onclick="LoadAsync">Try again</button>
+        <ErrorNotice Message="@error" Title="Assessment unavailable" />
+        <button class="button button-primary" @onclick="LoadAsync">Try again</button>
     }
     else if (assessment is not null)
     {
         <AssessmentSummary Assessment="assessment" />
         <div class="assessment-details-grid">
-            <section class="surface"><div class="surface-heading"><span class="section-number">01</span><div><h2>The details assessed</h2><p>Inputs saved with this assessment.</p></div></div><InputSnapshot Inputs="assessment.Inputs" /><div class="loan-total"><span>Requested loan</span><strong>@DisplayFormat.Money(assessment.Result.LoanAmount)</strong></div></section>
-            <section class="surface"><div class="surface-heading"><span class="section-number">02</span><div><h2>The rules applied</h2><p>A snapshot of the policy at assessment time.</p></div></div><dl class="rule-list"><div><dt>Annual interest rate</dt><dd>@DisplayFormat.Percentage(assessment.AppliedRules.AnnualInterestRatePercentage)</dd></div><div><dt>Maximum loan-to-value</dt><dd>@DisplayFormat.Percentage(assessment.AppliedRules.MaxLtvPercentage)</dd></div><div><dt>Maximum debt-to-income</dt><dd>@DisplayFormat.Percentage(assessment.AppliedRules.MaxDtiPercentage)</dd></div><div><dt>Maximum income multiple</dt><dd>@assessment.AppliedRules.MaxIncomeMultiple.ToString("0.##") × annual income</dd></div></dl></section>
+            <section class="surface">
+                <div class="surface-heading">
+                    <span class="section-number">01</span>
+                    <div>
+                        <h2>The details assessed</h2>
+                        <p>Inputs saved with this assessment.</p>
+                    </div>
+                </div>
+                <InputSnapshot Inputs="assessment.Inputs" />
+                <div class="loan-total">
+                    <span>Requested loan</span>
+                    <strong>@DisplayFormat.Money(assessment.Result.LoanAmount)</strong>
+                </div>
+            </section>
+            <section class="surface">
+                <div class="surface-heading">
+                    <span class="section-number">02</span>
+                    <div>
+                        <h2>The rules applied</h2>
+                        <p>A snapshot of the policy at assessment time.</p>
+                    </div>
+                </div>
+                <dl class="rule-list">
+                    <div>
+                        <dt>Annual interest rate</dt>
+                        <dd>@DisplayFormat.Percentage(assessment.AppliedRules.AnnualInterestRatePercentage)</dd>
+                    </div>
+                    <div>
+                        <dt>Maximum loan-to-value</dt>
+                        <dd>@DisplayFormat.Percentage(assessment.AppliedRules.MaxLtvPercentage)</dd>
+                    </div>
+                    <div>
+                        <dt>Maximum debt-to-income</dt>
+                        <dd>@DisplayFormat.Percentage(assessment.AppliedRules.MaxDtiPercentage)</dd>
+                    </div>
+                    <div>
+                        <dt>Maximum income multiple</dt>
+                        <dd>@assessment.AppliedRules.MaxIncomeMultiple.ToString("0.##") × annual income</dd>
+                    </div>
+                </dl>
+            </section>
         </div>
-        <section class="surface record-panel"><p class="eyebrow red-text">YOUR SAVED RECORD</p><dl class="record-grid"><div><dt>Assessment reference</dt><dd class="reference-value">@assessment.Id</dd></div><div><dt>Application reference</dt><dd><a class="reference-value" href="/applications/@assessment.ApplicationId">@assessment.ApplicationId</a></dd></div><div><dt>Assessed</dt><dd>@DisplayFormat.Timestamp(assessment.CreatedAtUtc)</dd></div><div><dt>Calculation version</dt><dd>@assessment.CalculationVersion</dd></div></dl></section>
-        <div class="demo-note"><span class="info-symbol" aria-hidden="true">i</span><p>This is an illustrative assessment, not a lending offer. Debt-to-income includes continuing debt payments and the proposed repayment, but excludes everyday living costs. Figures are displayed in pounds sterling.</p></div>
+        <section class="surface record-panel">
+            <p class="eyebrow red-text">YOUR SAVED RECORD</p>
+            <dl class="record-grid">
+                <div>
+                    <dt>Assessment reference</dt>
+                    <dd class="reference-value">@assessment.Id</dd>
+                </div>
+                <div>
+                    <dt>Application reference</dt>
+                    <dd>
+                        <a class="reference-value" href="/applications/@assessment.ApplicationId">@assessment.ApplicationId</a>
+                    </dd>
+                </div>
+                <div>
+                    <dt>Assessed</dt>
+                    <dd>@DisplayFormat.Timestamp(assessment.CreatedAtUtc)</dd>
+                </div>
+                <div>
+                    <dt>Calculation version</dt>
+                    <dd>@assessment.CalculationVersion</dd>
+                </div>
+            </dl>
+        </section>
+        <div class="demo-note">
+            <span class="info-symbol" aria-hidden="true">i</span>
+            <p>This is an illustrative assessment, not a lending offer. Debt-to-income includes continuing debt payments and the proposed repayment, but excludes everyday living costs. Figures are displayed in pounds sterling.</p>
+        </div>
     }
 </div>
 
 @code {
-    [Parameter] public Guid ApplicationId { get; set; }
-    [Parameter] public Guid AssessmentId { get; set; }
+    [Parameter]
+    public Guid ApplicationId { get; set; }
+
+    [Parameter]
+    public Guid AssessmentId { get; set; }
+
     private AssessmentRecord? assessment;
     private string? error;
     private bool loading = true;
+
     private CancellationTokenSource? cancellation;
+
     protected override Task OnParametersSetAsync() => LoadAsync();
+
     private async Task LoadAsync()
     {
-        cancellation?.Cancel(); cancellation?.Dispose(); cancellation = new();
-        var token = cancellation.Token; loading = true; error = null; assessment = null;
-        try { var saved = await Api.GetAssessmentAsync(ApplicationId, AssessmentId, token); if (!token.IsCancellationRequested) assessment = saved; }
-        catch (MortgageApiException exception) { if (!token.IsCancellationRequested) error = exception.Message; }
-        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-        finally { if (!token.IsCancellationRequested) loading = false; }
+        cancellation?.Cancel();
+        cancellation?.Dispose();
+        cancellation = new CancellationTokenSource();
+        var token = cancellation.Token;
+
+        loading = true;
+        error = null;
+        assessment = null;
+
+        try
+        {
+            var saved = await Api.GetAssessmentAsync(ApplicationId, AssessmentId, token);
+
+            if (!token.IsCancellationRequested)
+            {
+                assessment = saved;
+            }
+        }
+        catch (MortgageApiException exception)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                error = exception.Message;
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // A new route or disposal superseded this request.
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                loading = false;
+            }
+        }
     }
-    public void Dispose() { cancellation?.Cancel(); cancellation?.Dispose(); }
+
+    public void Dispose()
+    {
+        cancellation?.Cancel();
+        cancellation?.Dispose();
+    }
 }

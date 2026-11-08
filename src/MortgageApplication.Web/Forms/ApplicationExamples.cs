@@ -19,16 +19,36 @@ public static class ApplicationExamples
     public static ApplicationForm Create(string? key)
     {
         var model = new ApplicationForm();
-        if (Find(key) is null || key == "missing") return model;
+        if (Find(key) is null || key == "missing")
+        {
+            return model;
+        }
+
         model.FillExample();
+
         switch (key)
         {
-            case "income": model.AnnualIncome = "0"; break;
-            case "deposit": model.DepositAmount = model.PropertyValue; break;
-            case "precision": model.AnnualIncome = "60000.001"; break;
-            case "term": model.TermYears = "41"; break;
-            case "declined": model.DepositAmount = "0"; break;
+            case "income":
+                model.AnnualIncome = "0";
+                break;
+
+            case "deposit":
+                model.DepositAmount = model.PropertyValue;
+                break;
+
+            case "precision":
+                model.AnnualIncome = "60000.001";
+                break;
+
+            case "term":
+                model.TermYears = "41";
+                break;
+
+            case "declined":
+                model.DepositAmount = "0";
+                break;
         }
+
         return model;
     }
 }

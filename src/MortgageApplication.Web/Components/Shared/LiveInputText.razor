@@ -1,5 +1,11 @@
 @inherits InputText
 
 @* Send entered text to the model before a click or Enter can submit the form. *@
-<input type="text" name="@NameAttributeValue" @attributes="AdditionalAttributes" class="@CssClass"
-       @bind="CurrentValueAsString" @bind:event="oninput" @ref="Element" />
+<input
+    type="text"
+    name="@NameAttributeValue"
+    @attributes="AdditionalAttributes"
+    class="@CssClass"
+    @bind="CurrentValueAsString"
+    @bind:event="oninput"
+    @ref="Element" />

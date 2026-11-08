@@ -6,7 +6,13 @@ namespace MortgageApplication.Tests;
 public sealed class ValidationTests
 {
     private static readonly CreateApplicationRequest Valid = new()
-    { AnnualIncome = 60000, MonthlyExpenses = 500, DepositAmount = 20000, PropertyValue = 200000, TermYears = 25 };
+    {
+        AnnualIncome = 60000,
+        MonthlyExpenses = 500,
+        DepositAmount = 20000,
+        PropertyValue = 200000,
+        TermYears = 25
+    };
 
     public static IEnumerable<object[]> InvalidRequests()
     {
@@ -43,9 +49,19 @@ public sealed class ValidationTests
     [InlineData(1)]
     [InlineData(40)]
     public void ValidZeroValuesTrailingZerosAndTermBoundariesAreAccepted(int term) =>
-        Assert.Empty(ApplicationValidator.Validate(Valid with { MonthlyExpenses = 0.000m, DepositAmount = 0, TermYears = term }));
+        Assert.Empty(ApplicationValidator.Validate(Valid with
+        {
+            MonthlyExpenses = 0.000m,
+            DepositAmount = 0,
+            TermYears = term
+        }));
 
     [Fact]
     public void InclusiveMaximumsAndDebtAboveIncomeAreValidInput() =>
-        Assert.Empty(ApplicationValidator.Validate(Valid with { AnnualIncome = 1_000_000_000m, PropertyValue = 1_000_000_000m, MonthlyExpenses = 1_000_000_000m }));
+        Assert.Empty(ApplicationValidator.Validate(Valid with
+        {
+            AnnualIncome = 1_000_000_000m,
+            PropertyValue = 1_000_000_000m,
+            MonthlyExpenses = 1_000_000_000m
+        }));
 }

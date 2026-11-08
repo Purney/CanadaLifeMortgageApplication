@@ -23,12 +23,15 @@ public sealed class AffordabilityOptionsValidator : IValidateOptions<Affordabili
         Check(value.MaxLtvPercentage, 0, 100, false, nameof(value.MaxLtvPercentage));
         Check(value.MaxDtiPercentage, 0, 100, false, nameof(value.MaxDtiPercentage));
         Check(value.MaxIncomeMultiple, 0, 100, false, nameof(value.MaxIncomeMultiple));
+
         return errors.Count == 0 ? ValidateOptionsResult.Success : ValidateOptionsResult.Fail(errors);
 
         void Check(decimal? number, decimal min, decimal max, bool inclusiveMin, string key)
         {
             if (number is null || number > max || (inclusiveMin ? number < min : number <= min))
+            {
                 errors.Add($"Affordability:{key} is required and must be {(inclusiveMin ? "at least" : "greater than")} {min} and at most {max}.");
+            }
         }
     }
 }

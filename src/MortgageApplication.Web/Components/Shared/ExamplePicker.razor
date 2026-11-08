@@ -1,27 +1,76 @@
-<div class="example-picker" @onmouseenter="Open" @onmouseleave="Leave" @onfocusin="Focus" @onfocusout="Blur" @onkeydown="KeyDown">
+<div
+    class="example-picker"
+    @onmouseenter="Open"
+    @onmouseleave="Leave"
+    @onfocusin="Focus"
+    @onfocusout="Blur"
+    @onkeydown="KeyDown">
     <button type="button" class="button-text" disabled="@Disabled" aria-expanded="@open" aria-controls="@optionsId" @onclick="Open">@Label</button>
     <div id="@optionsId" class="example-options" hidden="@(!open || Disabled)" aria-label="@Label">
         @foreach (var choice in Choices)
         {
-            <button type="button" class="example-option" disabled="@Disabled" @onclick="() => SelectAsync(choice.Key)"><strong>@choice.Title</strong><span>@choice.Description</span></button>
+            <button type="button" class="example-option" disabled="@Disabled" @onclick="() => SelectAsync(choice.Key)">
+                <strong>@choice.Title</strong>
+                <span>@choice.Description</span>
+            </button>
         }
     </div>
 </div>
 
 @code {
-    [Parameter] public string Label { get; set; } = "Use example figures";
-    [Parameter] public IReadOnlyList<ApplicationExample> Choices { get; set; } = [];
-    [Parameter] public EventCallback<string> Selected { get; set; }
-    [Parameter] public bool Disabled { get; set; }
+    [Parameter]
+    public string Label { get; set; } = "Use example figures";
+
+    [Parameter]
+    public IReadOnlyList<ApplicationExample> Choices { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<string> Selected { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
     private readonly string optionsId = $"example-options-{Guid.NewGuid():N}";
+
     private bool open;
     private bool focused;
 
-    private void Open() { if (!Disabled) open = true; }
-    private void Leave() { if (!focused) open = false; }
-    private void Focus() { focused = true; Open(); }
-    private void Blur() { focused = false; open = false; }
-    private void KeyDown(KeyboardEventArgs args) { if (args.Key == "Escape") open = false; }
+    private void Open()
+    {
+        if (!Disabled)
+        {
+            open = true;
+        }
+    }
+
+    private void Leave()
+    {
+        if (!focused)
+        {
+            open = false;
+        }
+    }
+
+    private void Focus()
+    {
+        focused = true;
+        Open();
+    }
+
+    private void Blur()
+    {
+        focused = false;
+        open = false;
+    }
+
+    private void KeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            open = false;
+        }
+    }
+
     private async Task SelectAsync(string key)
     {
         open = false;

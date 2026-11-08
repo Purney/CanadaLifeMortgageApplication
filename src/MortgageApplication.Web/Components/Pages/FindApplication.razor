@@ -5,18 +5,49 @@
 <PageTitle>Find application | Canada Life demo</PageTitle>
 
 <div class="content-shell page-content">
-    <div class="breadcrumbs"><a href="/">Home</a><span aria-hidden="true">/</span><span>Find application</span></div>
-    <div class="page-heading"><p class="eyebrow red-text">PICK UP WHERE YOU LEFT OFF</p><h1>Find your application</h1><p>Your saved details and assessments, all in one place.</p></div>
+    <div class="breadcrumbs">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Find application</span>
+    </div>
+    <div class="page-heading">
+        <p class="eyebrow red-text">PICK UP WHERE YOU LEFT OFF</p>
+        <h1>Find your application</h1>
+        <p>Your saved details and assessments, all in one place.</p>
+    </div>
     <section class="surface find-surface">
-        <div class="surface-heading"><span class="section-number" aria-hidden="true">↗</span><div><h2>Your application reference</h2><p>Enter the reference you received when you saved your application.</p></div></div>
+        <div class="surface-heading">
+            <span class="section-number" aria-hidden="true">↗</span>
+            <div>
+                <h2>Your application reference</h2>
+                <p>Enter the reference you received when you saved your application.</p>
+            </div>
+        </div>
         <ErrorNotice Title="@errorTitle" Message="@error" />
         <form @onsubmit="FindAsync" @onsubmit:preventDefault novalidate>
             <fieldset disabled="@finding">
-            <div class="field"><label for="reference">Application reference</label><p class="field-hint" id="reference-hint">A reference looks like 12345678-1234-1234-1234-123456789abc.</p><input id="reference" class="reference-input" @bind="reference" @bind:event="oninput" aria-describedby="reference-hint" autocomplete="off" spellcheck="false" /></div>
-            <div class="form-actions"><button type="submit" class="button button-primary">@(finding ? "Finding application…" : "Find application") <span aria-hidden="true">→</span></button><ExamplePicker Label="Use example reference" Choices="referenceExamples" Selected="LoadReference" Disabled="finding" /></div>
+                <div class="field">
+                    <label for="reference">Application reference</label>
+                    <p class="field-hint" id="reference-hint">A reference looks like 12345678-1234-1234-1234-123456789abc.</p>
+                    <input
+                        id="reference"
+                        class="reference-input"
+                        @bind="reference"
+                        @bind:event="oninput"
+                        aria-describedby="reference-hint"
+                        autocomplete="off"
+                        spellcheck="false" />
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="button button-primary">@(finding ? "Finding application…" : "Find application") <span aria-hidden="true">→</span>
+                    </button>
+                    <ExamplePicker Label="Use example reference" Choices="referenceExamples" Selected="LoadReference" Disabled="finding" />
+                </div>
             </fieldset>
         </form>
-        <div class="panel-divider"></div><p class="small-note">Don't have a reference yet? <a href="/applications/new">Start a new application</a>.</p>
+        <div class="panel-divider">
+        </div>
+        <p class="small-note">Don't have a reference yet? <a href="/applications/new">Start a new application</a>.</p>
     </section>
 </div>
 
@@ -25,7 +56,9 @@
         new("invalid", "Malformed reference", "Enter text that is not a GUID. Choose Find application to see the API response."),
         new("missing", "Unsaved reference", "Use a fresh reference. Choose Find application to see the API's missing-record response.")
     ];
+
     private readonly CancellationTokenSource cancellation = new();
+
     private string reference = "";
     private string? error;
     private string errorTitle = "The API could not find this application";
@@ -33,29 +66,53 @@
 
     private void LoadReference(string key)
     {
-        if (finding) return;
+        if (finding)
+        {
+            return;
+        }
+
         reference = key == "missing" ? Guid.NewGuid().ToString() : "not-a-reference";
         error = null;
     }
 
     private async Task FindAsync()
     {
-        if (finding) return;
+        if (finding)
+        {
+            return;
+        }
+
         finding = true;
         error = null;
+
         try
         {
             var saved = await Api.FindApplicationAsync(reference, cancellation.Token);
-            if (!cancellation.IsCancellationRequested) Navigation.NavigateTo($"/applications/{saved.Id}");
+            if (!cancellation.IsCancellationRequested)
+            {
+                Navigation.NavigateTo($"/applications/{saved.Id}");
+            }
         }
         catch (MortgageApiException exception)
         {
-            if (cancellation.IsCancellationRequested) return;
+            if (cancellation.IsCancellationRequested)
+            {
+                return;
+            }
+
             error = exception.Message;
-            errorTitle = exception.StatusCode is { } code ? $"API response · HTTP {(int)code}" : "The mortgage service could not be reached";
+            errorTitle = exception.StatusCode is { } code
+                ? $"API response · HTTP {(int)code}"
+                : "The mortgage service could not be reached";
         }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
-        finally { finding = false; }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            // Leaving the page cancels the pending lookup.
+        }
+        finally
+        {
+            finding = false;
+        }
     }
 
     public void Dispose()
