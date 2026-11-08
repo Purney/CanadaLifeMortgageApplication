@@ -35,9 +35,9 @@ Run folder 01 before folder 02. Run folders 01 and 03 before all of folder 04. C
 
 The full run creates **two applications and three assessments**. Every additional assessment POST creates another record. Use a local demonstration database and avoid resending POST requests just to reread a response. History assertions expect exactly the two assessments created for the current approved application; extra manual assessments change those counts. There is no cleanup endpoint, automatic delete, retry, or destructive request.
 
-## Short interview route — about 3 minutes
+## Essential workflow
 
-Send these requests individually and show their actual response bodies and Test Results:
+Send these requests individually and inspect their response bodies and Test Results:
 
 1. **01 Happy path → 01 Create a valid application**: HTTP 201, saved inputs, ID and relative Location header.
 2. **01 Happy path → 02 Retrieve the saved application**: HTTP 200 using the captured ID.
@@ -46,7 +46,7 @@ Send these requests individually and show their actual response bodies and Test 
 5. **04 API errors → 03 Deposit equals property value**: HTTP 400 with `errors.depositAmount` from the API.
 6. **03 Declined outcome → 01 Create valid inputs with zero deposit**, then **02 Create a declined assessment**: still HTTP 201; show the saved `declined` decision and LTV explanation.
 
-If time permits, show the malformed JSON or fractional term example to distinguish binding failures from field validation, then the history paging folder. The separate `/assessments/latest` endpoint does not exist; the newest saved result is requested using `limit=1&sort=desc`.
+The malformed JSON and fractional term examples cover binding failures; the history folder covers paging and filtering. Request the newest saved result using `limit=1&sort=desc`.
 
 ## Optional command-line runner
 
@@ -66,6 +66,6 @@ For an API on another port, pass `--env-var baseUrl=http://localhost:YOUR_PORT`.
 
 ## Verification
 
-On 6 November 2026, Newman executed all **32 requests and 111 assertions**, with zero failures, against the current controller API on an isolated port/database. The database contained only the expected two applications and three assessments afterwards. Invalid requests created no extra records. The temporary API process was stopped after verification. No API source or database migration changes were needed.
+A full collection run checks all 32 requests and 111 assertions. Expected database writes are two applications and three assessments; invalid requests must create no extra records. Use an isolated local database when checking these counts.
 
-Postman's documentation explains [post-response scripts and Test Results](https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/). The full interview setup and code walkthrough are in [DEMONSTRATION.md](../DEMONSTRATION.md).
+Postman's documentation explains [post-response scripts and Test Results](https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/). Application workflows, calculation rules and configuration are in the [application guide](../DEMONSTRATION.md).
