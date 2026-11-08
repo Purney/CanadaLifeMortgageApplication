@@ -7,8 +7,8 @@ An ASP.NET Core 10 JSON API for submitting and retrieving mortgage applications 
 Install Git and the **.NET 10 SDK**. No database server or credentials are required.
 
 ```powershell
-git clone https://github.com/Purney/CanadaLifeMortageApplication.git
-cd CanadaLifeMortageApplication
+git clone https://github.com/Purney/CanadaLifeMortgageApplication.git
+cd CanadaLifeMortgageApplication
 dotnet restore
 dotnet build
 ```
